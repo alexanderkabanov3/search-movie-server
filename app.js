@@ -1,27 +1,31 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
 const morgan = require('morgan');
-const mongoose = require('mongoose');
-const passport = require('passport');
 
-const authRoutes = require('./routes/auth');
-const keys = require('./config/keys');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
+const authRoutes = require('./routes/authRoutes');
+const favoriteRoutes = require('./routes/favoritesRoutes');
+const commentsRoutes = require('./routes/commentsRoutes');
+
 const app = express();
 
-mongoose
-  .connect(keys.mongoURI)
-  .then(() => console.log('MongoDB is connected'))
-  .catch((err) => console.error(err));
+// Middlewares
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
-app.use(passport.initialize());
-require('./middleware/passport')(passport);
+app.use(express.json());
 
-app.use(morgan('dev'));
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use(cors());
+//Routes
 
 app.use('/api/auth', authRoutes);
+app.use('/api/favorite', favoriteRoutes);
+app.use('/api/comments', commentsRoutes);
+
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.url} on this server`, 404));
+});
+
+app.use(globalErrorHandler);
 
 module.exports = app;
