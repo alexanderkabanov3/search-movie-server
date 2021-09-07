@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const compression = require('compression');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -15,7 +16,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json());
-
+app.use(compression());
 //Routes
 
 app.use('/api/auth', authRoutes);
