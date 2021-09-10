@@ -20,6 +20,8 @@ module.exports.postComment = catchAsync(async (req, res, next) => {
     typeId: req.params.typeId,
     text: req.body.text,
     user: req.user.id,
+    userName: req.body.userName,
+    date: Date.now(),
   });
 
   res.status(200).json({
