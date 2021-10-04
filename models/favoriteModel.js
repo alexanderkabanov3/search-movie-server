@@ -4,7 +4,7 @@ const favoriteSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    enum: ['movie', 'series'],
+    enum: ['movie', 'tv'],
   },
   mediaId: {
     type: Number,
